@@ -29,6 +29,7 @@ import getopt
 from bluetooth import *
 from socketIO_client import SocketIO, LoggingNamespace
 
+LBS_PER_KG = 2.2046226218
 
 # Global
 board = None
@@ -36,6 +37,7 @@ sleep = True
 sensitivity = 30 #kg
 calibrate = 0 #kg
 config_address = None
+metric = True
 
 port = 8080
 host = "localhost"
@@ -43,7 +45,10 @@ host = "localhost"
 
 class CalculateWeight:
 	def formatWeight(self, weight):
-		return round(weight, 1)
+		if metric:
+			return round(weight, 1)
+		else:
+			return round(weight * LBS_PER_KG, 1)
 
 	def weight(self, data):
 		i = 0
