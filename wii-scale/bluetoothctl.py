@@ -171,6 +171,18 @@ class Bluetoothctl:
             success = True if res == 1 else False
             return success
 
+    def trust(self, mac_address):
+        """Try to connect to a device by mac address."""
+        try:
+            out = self.get_output("trust " + mac_address, 2)
+        except BluetoothctlError, e:
+            print(e)
+            return None
+        else:
+            # res = self.child.expect(["Trust succeeded", pexpect.EOF])
+            # success = True if res == 0 else False
+            return True
+
     def disconnect(self, mac_address):
         """Try to disconnect to a device by mac address."""
         try:

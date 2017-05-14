@@ -1,0 +1,5 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "sync-rsync.remote": "pi3-gray:~/Wii-Scale/",
+    "sync-rsync.onSave": true
+}

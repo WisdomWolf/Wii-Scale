@@ -56,19 +56,28 @@ def wait_for_balanceboard():
     mon = xwiimote.monitor(True, False)
     dev = None
     global mac_address
+    bt.start_scan()
+    print('scanning...')
+    connected = False
 
     while True:
-        print('scanning...')
-        bt.start_scan()
-        time.sleep(10)
-        devices = bt.get_available_devices()
-        for device in devices:
-            if 'nintendo' in device['name'].lower():
-                mac_address = device['mac_address']
-                bt.pair(mac_address)
-                status = bt.connect(mac_address)
-                print('Connected: {}'.format(status))
-                break
+        time.sleep(1)
+        if not connected:
+            devices = bt.get_available_devices()
+            for device in devices:
+                if 'nintendo' in device['name'].lower():
+                    if device not in bt.get_paired_devices():
+                        mac_address = device['mac_address']
+                        bt.pair(mac_address)
+                        connected = bt.connect(mac_address)
+                        print('Connected: {}'.format(connected))
+                        trusted = bt.trust(mac_address)
+                        print('Trusted: {}'.format(trusted))
+                        break
+                    else:
+                        connected = True
+                        print('Already paired')
+                        break
         
         mon.get_fd(True) # blocks
         connected = mon.poll()
