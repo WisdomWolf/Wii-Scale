@@ -11,6 +11,7 @@ import numpy
 import xwiimote
 
 import util
+from bluetoothctl import Bluetoothctl
 
 class RingBuffer():
     def __init__(self, length):
@@ -56,6 +57,17 @@ def wait_for_balanceboard():
     dev = None
 
     while True:
+        bt = Bluetoothctl()
+        bt.start_scan()
+        time.sleep(10)
+        devices = b.get_available_devices()
+        for device in devices:
+            if 'nintendo' in device['name'].lower():
+                bt.pair(device['mac_address'])
+                status = bt.connect(device['mac_address'])
+                print('Connected: {}'.format(status))
+                break
+        
         mon.get_fd(True) # blocks
         connected = mon.poll()
 
