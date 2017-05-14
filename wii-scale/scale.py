@@ -58,9 +58,10 @@ def wait_for_balanceboard():
 
     while True:
         bt = Bluetoothctl()
+        print('scanning...')
         bt.start_scan()
         time.sleep(10)
-        devices = b.get_available_devices()
+        devices = bt.get_available_devices()
         for device in devices:
             if 'nintendo' in device['name'].lower():
                 bt.pair(device['mac_address'])
