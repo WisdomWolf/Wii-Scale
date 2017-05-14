@@ -55,17 +55,18 @@ def wait_for_balanceboard():
     print("Waiting for balanceboard to connect..")
     mon = xwiimote.monitor(True, False)
     dev = None
+    global mac_address
 
     while True:
-        bt = Bluetoothctl()
         print('scanning...')
         bt.start_scan()
         time.sleep(10)
         devices = bt.get_available_devices()
         for device in devices:
             if 'nintendo' in device['name'].lower():
-                bt.pair(device['mac_address'])
-                status = bt.connect(device['mac_address'])
+                mac_address = device['mac_address']
+                bt.pair(mac_address)
+                status = bt.connect(mac_address)
                 print('Connected: {}'.format(status))
                 break
         
@@ -146,6 +147,8 @@ def average_mesurements(ms, max_stddev=55):
 
 def main():
     global iteration
+    global bt
+    bt = Bluetoothctl()
     
     if len(sys.argv) == 2:
         device = sys.argv[1]
@@ -178,7 +181,10 @@ def main():
 
 
     except KeyboardInterrupt:
+        bt.disconnect(mac_address)
+        # bt.remove(mac_address)
         print("\nBye!")
+        
 
 if __name__ == '__main__':
     main()
